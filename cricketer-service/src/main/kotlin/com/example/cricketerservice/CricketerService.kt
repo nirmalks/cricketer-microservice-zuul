@@ -1,7 +1,6 @@
 package com.example.cricketerservice
 
 import com.example.feignclients.TeamFeignClient
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
