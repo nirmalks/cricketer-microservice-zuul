@@ -8,6 +8,9 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
 
 @RestController
 @RequestMapping("/api")
@@ -15,11 +18,11 @@ class UserController(
         @Autowired
         val userService: UserService
 ) {
-
+    private val logger: Logger = LoggerFactory.getLogger(UserController::class.java)
     @GetMapping("/users")
     @FlowPreview
-    fun getUsers(): Flow<UserResponse>? {
-        return userService.getUsers()?.filterNotNull()?.map { UserResponse.fromUser(it) }
+    fun getUsers(): Flow<UserResponse> {
+        return userService.getUsers().filterNotNull().map { UserResponse.fromUser(it) }
     }
 
     @GetMapping("/users/{id}")
@@ -28,9 +31,13 @@ class UserController(
         return ResponseEntity.ok(UserResponse.fromUser(user))
     }
 
-    @PostMapping("/users")
+
+    @PostMapping("/users",
+        produces= [ MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
+        consumes = [ MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE] )
     suspend fun addUser(@RequestBody userRequest: UserRequest): ResponseEntity<UserResponse> {
-        val user = userService.save(userRequest.toUser(userRequest))
+        val user = userService.createUser(userRequest)
+        logger.info("encr pw ${user.password}")
         return ResponseEntity(UserResponse.fromUser(user), HttpStatus.CREATED)
     }
 
