@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.http.MediaType
 
 @RestController
 @RequestMapping("/api")
@@ -32,9 +31,7 @@ class UserController(
     }
 
 
-    @PostMapping("/users",
-        produces= [ MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
-        consumes = [ MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE] )
+    @PostMapping("/users")
     suspend fun addUser(@RequestBody userRequest: UserRequest): ResponseEntity<UserResponse> {
         val user = userService.createUser(userRequest)
         logger.info("encr pw ${user.password}")
@@ -55,5 +52,11 @@ class UserController(
             return ResponseEntity(HttpStatus.NOT_FOUND)
         }
         return ResponseEntity(userService.deleteById(id),HttpStatus.OK)
+    }
+
+    @DeleteMapping("/users")
+    suspend fun deleteUsers(): ResponseEntity<Void> {
+        userService.deleteAll().block()
+        return ResponseEntity(HttpStatus.OK)
     }
 }
