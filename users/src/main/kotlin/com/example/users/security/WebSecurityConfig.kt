@@ -32,6 +32,7 @@ open class WebSecurityConfig(
     private fun getAuthenticationFilter(): AuthenticationFilter {
         val authFilter = AuthenticationFilter(usersService, customEnvironment, authenticationManager())
         authFilter.setAuthenticationManager(authenticationManager())
+        authFilter.setFilterProcessesUrl("/api/login")
         return authFilter
     }
 
