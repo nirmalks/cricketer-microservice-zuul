@@ -40,7 +40,6 @@ class AuthenticationFilter(
                 )
             )
         } catch (ex: Exception) {
-            println("ex $ex")
             throw RuntimeException()
         }
     }
@@ -53,7 +52,6 @@ class AuthenticationFilter(
     ) {
         val username = ((authResult?.principal) as User).username
         val user = usersService.getUserByEmail(username).block()
-        println("user in auyth $user")
         val localDate = Date.from(
             LocalDateTime.now().plus(Duration.of(30, ChronoUnit.MINUTES))
                 .atZone(ZoneId.systemDefault())
